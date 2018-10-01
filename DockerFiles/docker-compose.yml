@@ -1,0 +1,40 @@
+version: "3"
+services:
+  eventmanager:
+    image: eventmanager:latest
+    stdin_open: true
+    tty: true
+    ports:
+      - "32000:32000"
+      - "32001:32001"
+      - "32002:32002"
+      - "32003:32003"
+      - "32004:32004"
+    networks:
+      - pubsubsystem
+  pub:
+    image: pubsubagent:latest
+    stdin_open: true
+    tty: true
+    ports:
+      - "8888:8888"
+    networks:
+      - pubsubsystem
+  sub1:
+    image: pubsubagent:latest
+    stdin_open: true
+    tty: true
+    ports:
+      - "8889:8889"
+    networks:
+      - pubsubsystem
+  sub2:
+    image: pubsubagent:latest
+    stdin_open: true
+    tty: true
+    ports:
+      - "8890:8890"
+    networks:
+      - pubsubsystem
+networks:
+  pubsubsystem:
