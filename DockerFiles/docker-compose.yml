@@ -16,24 +16,18 @@ services:
     image: pubsubagent:latest
     stdin_open: true
     tty: true
-    ports:
-      - "8888:8888"
     networks:
       - pubsubsystem
   sub1:
     image: pubsubagent:latest
     stdin_open: true
     tty: true
-    ports:
-      - "8889:8889"
     networks:
       - pubsubsystem
   sub2:
     image: pubsubagent:latest
     stdin_open: true
     tty: true
-    ports:
-      - "8890:8890"
     networks:
       - pubsubsystem
 networks:

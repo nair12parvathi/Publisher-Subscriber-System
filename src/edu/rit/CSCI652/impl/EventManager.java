@@ -296,10 +296,16 @@ public class EventManager {
                         String arr[] = sub.split(":");
                         socket = connectionHandler(arr[0], arr[1]);
                         sendObject(msg, socket);
+                        closeConnection(socket);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        listOfNodeAvailabilityStatus.put(sub,"OFF");
+                        if (messageQueue.containsKey(sub)) {
+                            messageQueue.get(sub).add(event);
+                        } else {
+                            messageQueue.put(sub, new LinkedList<>());
+                            messageQueue.get(sub).add(event);
+                        }
                     }
-                    closeConnection(socket);
                 } else {
                     if (messageQueue.containsKey(sub)) {
                         messageQueue.get(sub).add(event);
@@ -370,11 +376,10 @@ public class EventManager {
     private void notifyPubSubOfNewTopic(Topic topic, String publisher) {
         Iterator iter = listOfNodeAvailabilityStatus.entrySet().iterator();
         while (iter.hasNext()) {
+            Map.Entry pair = (Map.Entry) iter.next();
+            String serverToNotify = (String) pair.getKey();
             try {
-                Map.Entry pair = (Map.Entry) iter.next();
-                String serverToNotify = (String) pair.getKey();
-
-                if (!serverToNotify.equals(publisher)) {
+                if (!serverToNotify.equals(publisher) && pair.getValue().equals("ON")) {
 
                     String[] addr = serverToNotify.split(":");
                     Socket socket = connectionHandler(addr[0], addr[1]);
@@ -385,7 +390,7 @@ public class EventManager {
                     closeConnection(socket);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                pair.setValue("OFF");
             }
         }
     }
